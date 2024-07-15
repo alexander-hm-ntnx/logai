@@ -6,7 +6,7 @@
 ##
 ##
 workflow_config:  
-  output_dir: "/Users/mohit.gurnani/projects/logai/examples/jupyter_notebook/nn_ad_benchmarking/temp_output_n"
+  output_dir: "/Users/alexander.huang/Workspace/logai/examples/jupyter_notebook/nn_ad_benchmarking/temp_output"
   output_file_type: "csv"
   training_type: "unsupervised"
   deduplicate_test: True
@@ -15,8 +15,8 @@ workflow_config:
   train_test_shuffle: True
 
   data_loader_config:
-    train: "/Users/mohit.gurnani/Downloads/data/train_data.csv"
-    test: "/Users/mohit.gurnani/Downloads/data/test_data.csv"
+    test: "/Users/alexander.huang/Workspace/data/panacea/1749872_test/10_50_113_23-report/raw_files/aplos.out.20240604-102708Z"
+    train: "/Users/alexander.huang/Workspace/data/panacea/1749872_test/10_50_113_23-report/raw_files/mercury.ntnx-24sh5t060084-a-cvm.nutanix.log.INFO.20240711-004201Z.12666"
 
   open_set_partitioner_config:
     session_window: True
@@ -27,10 +27,10 @@ workflow_config:
   log_vectorizer_config:
     algo_name: "logbert"
     algo_param:
-      model_name: "bert-base-cased"
+      model_name: "google-bert/bert-base-cased"
       max_token_len: 384
       custom_tokens: ["BLOCK", "IP", "HEX", "INT"]
-      output_dir: "/Users/mohit.gurnani/projects/logai/examples/jupyter_notebook/nn_ad_benchmarking/temp_output_n"
+      output_dir: "/Users/alexander.huang/Workspace/logai/examples/jupyter_notebook/nn_ad_benchmarking/temp_output"
       tokenizer_dirname: "logbert_tokenizer"
       dataset: "normal"
 
@@ -40,7 +40,7 @@ workflow_config:
       algo_params:
           pretrain_from_scratch: False
           max_token_len: 384
-          model_name: "bert-base-cased"
+          model_name: "google-bert/bert-base-cased"
           learning_rate: 0.0001
           num_train_epochs: 5
           per_device_train_batch_size: 4
@@ -48,6 +48,6 @@ workflow_config:
           save_strategy: "steps"
           save_total_limit: 3
           mask_ngram: 8
-          tokenizer_dirpath: "/Users/mohit.gurnani/projects/logai/examples/jupyter_notebook/nn_ad_benchmarking/temp_output_n/models/bert-base-cased_tokenizer"
-          output_dir: "/Users/mohit.gurnani/projects/logai/examples/jupyter_notebook/nn_ad_benchmarking/temp_output_n/models"
+          tokenizer_dirpath: "/Users/alexander.huang/Workspace/logai/examples/jupyter_notebook/nn_ad_benchmarking/temp_output/google-bert/bert-base-cased_tokenizer"
+          output_dir: "/Users/alexander.huang/Workspace/logai/examples/jupyter_notebook/nn_ad_benchmarking/temp_output/models"
 

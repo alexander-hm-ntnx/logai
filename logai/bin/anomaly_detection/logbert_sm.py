@@ -99,11 +99,12 @@ def mask_logs(logline):
 
 
 def process_df(df, label):
-  df["epoch"] = df["epoch"].astype(int)
-  has_zero_or_na_column = (df['epoch'] == 0) | df['epoch'].isna()
+  print(df.keys())
+  # df["timestamp"] = df["timestamp"].astype(int)
+  has_zero_or_na_column = (df['timestamp'] == 0) | df['timestamp'].isna()
   if has_zero_or_na_column.any():
     dataset = "train" if label == 0 else "test"
-    print("Dataset %s has corrupt epochs" % dataset)
+    print("Dataset %s has corrupt timestamps" % dataset)
     exit(1)
   df = df.dropna(subset=['pid'])
   print(df.shape)
@@ -130,15 +131,16 @@ def process_df(df, label):
     "FATAL": 5,
   }
   df = df.rename(
-    columns={"body": constants.LOGLINE_NAME, "level": constants.LOG_LEVEL}
+    columns={"message": constants.LOGLINE_NAME, "log_level": constants.LOG_LEVEL, "source_file": constants.SOURCE_FILE, "pid": constants.SPAN_ID}
   )
+  print(df.keys())
   df[constants.LOG_SEVERITY_NUMBER] = df[constants.LOG_LEVEL].map(_SEVERITY_MAP)
-  df[constants.LOG_SEVERITY_NUMBER] = df[constants.LOG_SEVERITY_NUMBER].fillna(1)
-  df[constants.LOG_TIMESTAMPS] = pd.to_datetime(df["epoch"], unit='s')
-  # df[constants.LOGLINE_NAME] = df[constants.LOGLINE_NAME].apply(mask_logs)
+  # df[constants.LOG_SEVERITY_NUMBER] = df[constants.LOG_SEVERITY_NUMBER].fillna(1)
+  df[constants.LOG_TIMESTAMPS] = pd.to_datetime(df["timestamp"], unit='s')
+  df[constants.LOGLINE_NAME] = df[constants.LOGLINE_NAME].apply(mask_logs)
   # print("Masking of logs is complete")
-  df[constants.SPAN_ID] = df["pid"] #df["source_file"] + "_" + df[constants.LOG_SEVERITY_NUMBER].astype(str) # df["pid"] + "_" + + logs_df["hh"].astype(str)
-  df[constants.LABELS] = label
+  # df[constants.SPAN_ID] = df["pid"] #df["source_file"] + "_" + df[constants.LOG_SEVERITY_NUMBER].astype(str) # df["pid"] + "_" + + logs_df["hh"].astype(str)
+  df[constants.LABELS] = df[constants.LOG_SEVERITY_NUMBER]
   return df
 
 def divide_df(df, n):
@@ -149,14 +151,16 @@ def divide_df(df, n):
 
 if process_data == 1:
 
-  data_types = {'Column1':str, 'Column2': str, 'Column3': str, 'Column4': int, 'Column5': str, 'Column6': int, 'Column7': str}
+  data_types = {'Column1':str, 'Column2': str, 'Column3': str, 'Column4': int, 'Column5': str}
 
   if config.data_loader_config.test and os.path.exists(config.data_loader_config.test):
-    test_df = pd.read_csv(config.data_loader_config.test, index_col=0, dtype=data_types)#, nrows=20000)
+    test_df = pd.read_csv(config.data_loader_config.test, dtype=data_types)#, nrows=20000)
+    # test_df = pd.read_csv(config.data_loader_config.test, sep='\t', index_col=0, dtype=data_types)#, nrows=20000)
   else:
     exit(1)
   if config.data_loader_config.train and os.path.exists(config.data_loader_config.train):
-    train_df = pd.read_csv(config.data_loader_config.train, index_col=0, dtype=data_types, encoding='unicode_escape')#, nrows=200000)
+    train_df = pd.read_csv(config.data_loader_config.train, dtype=data_types, encoding='unicode_escape')#, nrows=200000)
+    # train_df = pd.read_csv(config.data_loader_config.train, sep='\t', index_col=0, dtype=data_types, encoding='unicode_escape')#, nrows=200000)
   else:
     exit(1)
 
@@ -170,10 +174,9 @@ if process_data == 1:
   # Reset the index
   logs_df = logs_df.reset_index(drop=True)
 
-
-  metadata = {constants.LOG_TIMESTAMPS: [constants.LOG_TIMESTAMPS], constants.SPAN_ID: [constants.SPAN_ID],
-              "body": [constants.LOGLINE_NAME, "source_file"], constants.LABELS: [constants.LABELS],
-              "severity_text": ["log_level"], constants.LOG_SEVERITY_NUMBER: [constants.LOG_SEVERITY_NUMBER]}
+  # timestamp,log_level,source_file,pid,message
+  metadata = {constants.LOG_TIMESTAMPS: [constants.LOG_TIMESTAMPS], "severity_text": [constants.LOG_LEVEL], constants.SPAN_ID: [constants.SPAN_ID],
+              "body": [constants.LOGLINE_NAME, constants.SOURCE_FILE], constants.LOG_SEVERITY_NUMBER: [constants.LOG_SEVERITY_NUMBER], constants.LABELS: [constants.LABELS]}
 
   logrecord = LogRecordObject.from_dataframe(logs_df, metadata)
 
