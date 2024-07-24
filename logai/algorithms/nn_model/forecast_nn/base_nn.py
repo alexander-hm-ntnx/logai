@@ -257,7 +257,7 @@ class ForecastBasedNN(nn.Module):
                 y_true_list = np.array(y_true_list)
                 y_pred_list = np.array(y_pred_list)
 
-                y_correct = np.sum(np.equal(y_true_list, y_pred_list, dtype=np.int))
+                y_correct = np.sum(np.equal(y_true_list, y_pred_list))#, dtype=int))
                 logging.info(
                     "Dev acc @ top-1: {}  correct: {} out of {}".format(
                         float(y_correct) / num_y, y_correct, num_y

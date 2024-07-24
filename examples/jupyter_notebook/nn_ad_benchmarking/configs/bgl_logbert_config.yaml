@@ -13,7 +13,7 @@ workflow_config:
   deduplicate_test: True
   test_data_frac_pos: 0.5
   train_test_shuffle: True
-  dataset_name: hdfs
+  dataset_name: bgl
 
   data_loader_config:
     filepath: "../../datasets/BGL_AD/BGL_11k.log"
