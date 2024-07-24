@@ -12,7 +12,7 @@ workflow_config:
   training_type: "supervised"
   deduplicate_test: True
   test_data_frac_pos: 0.5
-  dataset_name: hdfs
+  dataset_name: bgl
 
   data_loader_config:
     filepath: "../../datasets/BGL_AD/BGL_11k.log"
